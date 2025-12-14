@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  liberama:
+    image: liberama
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: liberama
+    ports:
+      - "44080:44080"
+    volumes:
+      # /Path to saved site data:/path in  container
+      - ../data:/data/liberama
+    environment:
+      - APPDIR=/data/liberama

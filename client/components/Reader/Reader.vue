@@ -1,9 +1,15 @@
 <template>
-    <div class="column no-wrap">
+    <div class="column no-wrap" :style="[listActive ? 'max-height: 100vh': '']">
         <div v-show="toolBarActive" ref="header" class="header">
             <div ref="buttons" class="row" :class="{'no-wrap': !toolBarMultiLine}">
+                <button ref="list" v-ripple class="tool-button" :class="buttonActiveClass('list')" @click="buttonClick('list')">
+                    <q-icon name="la la-clipboard-list" size="32px" />
+                    <q-tooltip :delay="1500" anchor="bottom right" content-style="font-size: 80%">
+                        {{ rstore.readerActions['list'] }}
+                    </q-tooltip>
+                </button>
                 <button ref="loader" v-ripple class="tool-button" :class="buttonActiveClass('loader')" @click="buttonClick('loader')">
-                    <q-icon name="la la-arrow-left" size="32px" />
+                    <q-icon name="la la-file-upload" size="32px" />
                     <q-tooltip :delay="1500" anchor="bottom right" content-style="font-size: 80%">
                         {{ rstore.readerActions['loader'] }}
                     </q-tooltip>
@@ -187,6 +193,7 @@ import _ from 'lodash';
 import {Buffer} from 'safe-buffer';
 
 import LoaderPage from './LoaderPage/LoaderPage.vue';
+import BookListPage from './BookListPage/BookListPage.vue';
 import TextPage from './TextPage/TextPage.vue';
 import ProgressPage from './ProgressPage/ProgressPage.vue';
 
@@ -219,6 +226,7 @@ import LockQueue from '../../share/LockQueue';
 const componentOptions = {
     components: {
         LoaderPage,
+        BookListPage,
         TextPage,
         ProgressPage,
 
@@ -266,10 +274,10 @@ const componentOptions = {
         },
         loaderActive: function(newValue) {
             (async() => {
-                const recent = this.mostRecentBook();
-                if (!newValue && !this.loading && recent && !await bookManager.hasBookParsed(recent)) {
-                    this.loadBook(recent);
-                }
+                // const recent = this.mostRecentBook();
+                //if (!newValue && !this.loading && recent && !await bookManager.hasBookParsed(recent)) {
+                    // this.loadBook(recent);
+                //}
             })();
         },
         dualPageMode(newValue) {
@@ -285,6 +293,7 @@ class Reader {
     rstore = {};
 
     loaderActive = false;
+    listActive = false;
     loadFileActive = false;
     loadBufferActive = false;
     fullScreenActive = false;
@@ -355,7 +364,7 @@ class Reader {
                 await bookManager.setRecentBook(Object.assign({}, recent, {bookPos: newValue, bookPosSeen: this.bookPosSeen}));
 
                 if (this.actionCur < 0 || (this.actionCur >= 0 && this.actionList[this.actionCur] != newValue))
-                    this.addAction(newValue);
+                     this.addAction(newValue);
 
                 this.paramPosIgnore = true;
                 this.updateRoute();
@@ -421,9 +430,10 @@ class Reader {
 
             if (this.$root.getRootRoute() == '/reader') {
                 if (this.routeParamUrl) {
-                    await this.loadBook({url: this.routeParamUrl, bookPos: this.routeParamPos, force: this.routeParamRefresh});
+                    // TODO: add setting option
+            //        await this.loadBook({url: this.routeParamUrl, bookPos: this.routeParamPos, force: this.routeParamRefresh});
                 } else {
-                    this.loaderActive = true;
+                    this.listActive = true;
                 }
             }
 
@@ -438,11 +448,15 @@ class Reader {
                 this.commit('reader/setSettings', newSettings);
             }
 
-            this.updateRoute();
+            // this.updateRoute();
+            this.$router.push('/reader');
 
             await this.$refs.dialogs.init();
-
             this.$refs.recentBooksPage.init();
+
+            if (this.listActive) {
+                this.$refs.page.init();
+            }
         })();
 
         //единственный запуск periodicTasks при инициализации
@@ -889,10 +903,16 @@ class Reader {
     }
 
     loaderToggle() {
-        this.loaderActive = !this.loaderActive;
-        if (this.loaderActive) {
-            this.closeAllWindows();
-        }
+        this.listActive = false;
+        this.loaderActive = true; 
+        this.closeAllWindows();
+    }
+
+    listToggle() {
+        this.loaderActive = false;
+        this.listActive = true;
+        this.closeAllWindows();
+        this.$refs.recentBooksPage.init();
     }
 
     loadFileToggle() {
@@ -1004,11 +1024,17 @@ class Reader {
         this.recentBooksActive = false;
     }
 
-    recentBooksToggle() {
-        this.recentBooksActive = !this.recentBooksActive;
+    recentBooksToggle(forceOpen = false) {
+        if (forceOpen) {
+            this.recentBooksActive = true;
+        } else {
+            this.recentBooksActive = !this.recentBooksActive;
+        }
         if (this.recentBooksActive) {
             this.closeAllWindows();
+            try {
             this.$refs.recentBooksPage.init();
+            } catch{}
             this.recentBooksActive = true;
         } else {
             this.recentBooksActive = false;
@@ -1148,6 +1174,7 @@ class Reader {
 
         switch (action) {
             case 'loader':
+            case 'list':
             case 'loadFile':
             case 'loadBuffer':
             case 'help':
@@ -1187,7 +1214,7 @@ class Reader {
                 break;
         }
 
-        if (this.activePage == 'LoaderPage' || !this.mostRecentBookReactive) {
+        if (this.activePage == 'LoaderPage' || this.activePage == 'BookListPage' || !this.mostRecentBookReactive) {
             switch (action) {
                 case 'undoAction':
                 case 'redoAction':
@@ -1221,8 +1248,11 @@ class Reader {
 
         if (this.progressActive)
             result = 'ProgressPage';
-        else if (this.loaderActive)
+        else if (this.loaderActive) {
             result = 'LoaderPage';
+        } else if (this.listActive) {
+            result = 'BookListPage'
+        }
         else if (this.mostRecentBookReactive)
             result = 'TextPage';
 
@@ -1261,6 +1291,15 @@ class Reader {
                     textPage.showBook();
                 }
             });
+        }
+
+        if (!result) {
+            result = 'BookListPage';
+
+            this.updateRoute();
+        }
+        if (result === 'LoaderPage' || result =='BookListPage') {
+            this.$router.push('/reader');
         }
 
         this.lastActivePage = result;
@@ -1305,6 +1344,7 @@ class Reader {
                 (!opts.path || opts.path == lastBook.path) && 
                 await bookManager.hasBookParsed(lastBook)) {
             this.loaderActive = false;
+            this.listActive = false;
             return;
         }
 
@@ -1347,6 +1387,7 @@ class Reader {
                     this.mostRecentBook();
                     this.addAction(wasOpened.bookPos);
                     this.loaderActive = false;
+                    this.listActive = false;
                     progress.hide(); this.progressActive = false;
                     this.blinkCachedLoadMessage();
 
@@ -1440,6 +1481,7 @@ class Reader {
             this.updateRoute(true);
 
             this.loaderActive = false;
+            this.listActive = false;
             progress.hide(); this.progressActive = false;
             if (loadCached) {
                 this.blinkCachedLoadMessage();
@@ -1535,6 +1577,9 @@ class Reader {
         switch (action) {
             case 'loader':
                 this.loaderToggle();
+                break;
+            case 'list':
+                this.listToggle();
                 break;
             case 'loadFile':
                 this.loadFileToggle();

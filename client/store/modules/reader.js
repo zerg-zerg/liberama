@@ -8,6 +8,7 @@ const dayMs = 24*hourMs;//количество ms в сутках
 
 const readerActions = {
     'loader': 'На страницу загрузки',
+    'list': 'На список книг',
     'loadFile': 'Загрузить файл с диска',
     'loadBuffer': 'Загрузить из буфера обмена',
     'help': 'Вызвать cправку',    
@@ -66,7 +67,7 @@ const toolButtons = [
 
 //readerActions[name]
 const hotKeys = [
-    {name: 'loader', codes: ['Escape']},
+    {name: 'list', codes: ['Escape']},
     {name: 'loadFile', codes: ['F3']},
     {name: 'loadBuffer', codes: ['F4']},
     {name: 'help', codes: ['F1', 'H']},
