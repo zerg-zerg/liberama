@@ -102,9 +102,9 @@
                 </div>
 
                 <q-virtual-scroll ref="virtualScroll" v-slot="{ item, index }" :items="tableData"
-                    scroll-target="#vs-container" virtual-scroll-item-size="80" @virtual-scroll="onScroll">
+                    scroll-target="#vs-container" virtual-scroll-item-size="65" @virtual-scroll="onScroll">
                     <div class="table-row row"
-                        :class="{ even: index % 2 > 0, 'active-book': item.active, 'active-parent-book': item.activeParent }">
+                        :class="{ 'active-book': item.active, 'active-parent-book': item.activeParent }">
                         <div v-show="item.inGroup" class="row-part column justify-center items-center"
                             style="width: 40px">
                             <q-icon name="la la-code-branch" size="24px" style="color: green" />
@@ -113,7 +113,7 @@
                         <div class="row-part column justify-center items-stretch" style="width: 60px">
                             <div class="col row justify-start items-center clickable" style="padding: 0 2px 0 2px"
                                 @click="loadBook(item, bothBucEnabled && item.needBookUpdate)">
-                                <div v-show="isLoadedCover(item.coverPageUrl)" style="height: 80px"
+                                <div v-show="isLoadedCover(item.coverPageUrl)" style="height: 65px"
                                     v-html="getCoverHtml(item.coverPageUrl)" />
                                 <q-icon v-show="!isLoadedCover(item.coverPageUrl)" name="la la-book" size="40px"
                                     style="color: #dddddd" />
@@ -132,9 +132,9 @@
                             </div>
                         </div>
 
-                        <div class="row-part column items-stretch clickable break-word" @click="loadBook(item)" style="padding-left: 6px; padding-top: 10px">
-                            <div class="col"
-                                style="border: none; line-height: 140%;"
+                        <div class="row-part column items-stretch clickable break-word bottom-border" @click="loadBook(item)" style="padding-left: 6px;">
+                            <div class="col "
+                                style="border: none; line-height: 140%;flex-direction: column;display: flex;"
                                 :style="{ 'width': (456 - 40 * (+item.inGroup)) + 'px' }">
                                 <div style="font-size: 90%">
                                     {{ item.desc.title }}
@@ -151,7 +151,17 @@
                                 </div>
                             </div>
 
-                            <div class="row" style="font-size: 10px;">
+                            <div class="row" style="font-size: 10px;"
+                                :style="{ 'width': (380 - 40 * (+item.inGroup)) + 'px' }">                            
+                                <div class="row items-center row-info-bottom"
+                                    :style="`width: ${(260 - 40 * (+item.inGroup))}px; padding: 1px`">
+                                    <div class="read-bar" :style="`width: ${100 * item.readPart}%`"></div>
+                                </div>                                
+                                <div class="row-info-bottom" style="width: 1px">
+                                </div>
+                            </div>
+
+                            <div class="row" style="font-size: 10px;justify-content: flex-end;display: flex;align-items: flex-end;">
                                 <div class="row justify-start items-center row-info-top" style="padding-right: 6px">
                                     {{ item.desc.textLen }}
                                 </div>
@@ -160,7 +170,7 @@
                                     {{ item.desc.perc }}
                                 </div>
 
-                                <div class="col row">
+                                <div class="col row" style="flex-wrap: nowrap; ">
                                     <div class="row justiy-start items-center row-info-top time-info"
                                         style="padding-right: 16px">
                                         Загружен: {{ item.loadTime }}
@@ -175,27 +185,17 @@
                                 </div>
                                 <div class="row-info-top" style="width: 1px">
                                 </div>
-                            </div>
-
-                            <div class="row" style="font-size: 10px;margin-bottom: -2px;"
-                                :style="{ 'width': (380 - 40 * (+item.inGroup)) + 'px' }">                            
-                                <div class="row items-center row-info-bottom"
-                                    :style="`width: ${(260 - 40 * (+item.inGroup))}px; padding: 1px`">
-                                    <div class="read-bar" :style="`width: ${100 * item.readPart}%`"></div>
-                                </div>                                
-                                <div class="row-info-bottom" style="width: 1px">
-                                </div>
-                            </div>
+                            </div>                            
                         </div>
 
-                        <div class="row-part column" style="width: 50px;">
+                        <div class="row-part column bottom-border" style="width: 50px;">
                             <div class="col column justify-center"
                                 style="font-size: 75%; padding-left: 6px; border: none">
                             </div>
 
                             <div class="del-button self-end row justify-center items-center clickable"
                                 @click="handleDel(item)">
-                                <q-icon class="la la-times" size="12px" />
+                                <q-icon class="la la-trash-alt" size="12px" />
                                 <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
                                     {{ (showArchive ? 'Удалить окончательно' : 'Перенести в архив') }}
                                 </q-tooltip>
@@ -204,7 +204,7 @@
                             <div v-show="showArchive"
                                 class="restore-button self-start row justify-center items-center clickable"
                                 @click="handleRestore(item)">
-                                <q-icon class="la la-arrow-left" size="14px" />
+                                <q-icon class="la la-undo" size="14px" />
                                 <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
                                     Восстановить из архива
                                 </q-tooltip>
@@ -922,11 +922,19 @@ export default vueComponent(BookListPage);
 }
 
 .table-row {
-    min-height: 80px;
+    min-height: 65px;
+    padding: 2px 0;
+    position: relative;
 }
 
 .row-part {
-    padding: 4px 0px 0px 0px;
+    padding: 4px 0px 4px 4px;
+}
+
+.table-row:hover {
+    background-color: rgba(125,125,125,0.05);
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .clickable {
@@ -945,6 +953,7 @@ export default vueComponent(BookListPage);
 
 .active-book {
     background-color: var(--bg-selected-item-color1) !important;
+    border-radius: 4px;
 }
 
 .active-parent-book {
@@ -983,6 +992,7 @@ export default vueComponent(BookListPage);
 .row-info-top,
 .row-info-bottom {
     color: #888888;
+    flex-shrink: 0;
 }
 
 .read-bar {
@@ -1053,5 +1063,13 @@ export default vueComponent(BookListPage);
 .bottom-span {
     font-size: 70%;
     margin-bottom: 10px;
+}
+
+.bottom-border::after {
+    content: '';
+    width: 100%;
+    border-bottom: 1px solid rgba(125,125,125,0.15);
+    position: absolute;
+    bottom: 0px;
 }
 </style>

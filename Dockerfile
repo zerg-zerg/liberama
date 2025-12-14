@@ -14,6 +14,7 @@ ENV CALIBRE_INSTALL_DIR="/data/liberama/calibre"
 ENV PATH="${PATH}:${CALIBRE_INSTALL_DIR}/bin:${CALIBRE_INSTALL_DIR}"
 # RUN wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin install_dir=/data/liberama/calibre isolated=y
 
+RUN rm -rf $APPDIR/public/*
 RUN npm i && npm run build:client && node build/prepkg.js linux
 RUN rm ./server/config/application_env; exit 0
 
