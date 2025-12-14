@@ -1,7 +1,7 @@
 <template>
     <div ref="main" class="column no-wrap" style="min-height: 500px; max-height: 100%">
         <div class="col-auto column justify-start items-start no-wrap overflow-hidden" style="padding-left:5%">
-            <div class="row justify-start items-center no-wrap overflow-hidden" style="width: 573px; padding: 6px 0; gap: 16px;">
+            <div class="row justify-start items-center no-wrap overflow-hidden" style="width: 773px; padding: 6px 0; gap: 16px;max-width: 100%;min-width: 400px;">
                 <div>
                     <span>Библиотека: </span>
                     <span v-show="!loading">{{ header }}</span>
@@ -110,7 +110,7 @@
                             <q-icon name="la la-code-branch" size="24px" style="color: green" />
                         </div>
 
-                        <div class="row-part column justify-center items-stretch" style="width: 60px">
+                        <div class="row-part column justify-center items-stretch" style="width: 54px">
                             <div class="col row justify-start items-center clickable" style="padding: 0 2px 0 2px"
                                 @click="loadBook(item, bothBucEnabled && item.needBookUpdate)">
                                 <div v-show="isLoadedCover(item.coverPageUrl)" style="height: 65px"
@@ -132,10 +132,10 @@
                             </div>
                         </div>
 
-                        <div class="row-part column items-stretch clickable break-word bottom-border" @click="loadBook(item)" style="padding-left: 6px;">
+                        <div class="row-part column items-stretch clickable break-word bottom-border" @click="loadBook(item)">
                             <div class="col "
                                 style="border: none; line-height: 140%;flex-direction: column;display: flex;"
-                                :style="{ 'width': (456 - 40 * (+item.inGroup)) + 'px' }">
+                                :style="{ 'width': (656 - 40 * (+item.inGroup)) + 'px' }">
                                 <div style="font-size: 90%">
                                     {{ item.desc.title }}
                                 </div>
@@ -182,32 +182,30 @@
                                     <div class="row justify-center items-center row-info-top" style="">
                                         {{ item.num }}
                                     </div>
+                                    <div class="del-button row justify-center items-center clickable"
+                                        @click="handleDel(item)">
+                                        <q-icon class="la la-trash-alt" size="12px" />
+                                        <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
+                                            {{ (showArchive ? 'Удалить окончательно' : 'Перенести в архив') }}
+                                        </q-tooltip>
+                                    </div>
+                                    <div v-show="showArchive"
+                                        class="restore-button row justify-center items-center clickable"
+                                        @click="handleRestore(item)">
+                                        <q-icon class="la la-undo" size="14px" />
+                                        <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
+                                            Восстановить из архива
+                                        </q-tooltip>
+                                    </div>
                                 </div>
                                 <div class="row-info-top" style="width: 1px">
                                 </div>
                             </div>                            
                         </div>
 
-                        <div class="row-part column bottom-border" style="width: 50px;">
+                        <div class="row-part column bottom-border" style="width: 40px;">
                             <div class="col column justify-center"
                                 style="font-size: 75%; padding-left: 6px; border: none">
-                            </div>
-
-                            <div class="del-button self-end row justify-center items-center clickable"
-                                @click="handleDel(item)">
-                                <q-icon class="la la-trash-alt" size="12px" />
-                                <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
-                                    {{ (showArchive ? 'Удалить окончательно' : 'Перенести в архив') }}
-                                </q-tooltip>
-                            </div>
-
-                            <div v-show="showArchive"
-                                class="restore-button self-start row justify-center items-center clickable"
-                                @click="handleRestore(item)">
-                                <q-icon class="la la-undo" size="14px" />
-                                <q-tooltip :delay="1500" anchor="bottom middle" content-style="font-size: 80%">
-                                    Восстановить из архива
-                                </q-tooltip>
                             </div>
 
                             <div v-show="bothBucEnabled && item.showCheckBuc" class="buc-checkbox self-start">
@@ -907,7 +905,7 @@ export default vueComponent(BookListPage);
 }
 
 .recent-books-scroll {
-    width: 573px;
+    width: 773px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -1001,12 +999,12 @@ export default vueComponent(BookListPage);
 }
 
 .del-button {
-    width: 25px;
-    height: 20px;
-    position: absolute;
+    width: 30px;
+    height: 10px;
+    position: relative;
     border: none;
-    margin: 1px;
     color: gray;
+    margin-top: -2px;
 }
 
 .del-button:hover {
@@ -1015,12 +1013,12 @@ export default vueComponent(BookListPage);
 }
 
 .restore-button {
-    width: 25px;
-    height: 20px;
-    position: absolute;
+    width: 30px;
+    height: 10px;
+    position: relative;
     border: npne;
-    margin: 1px;
     color: gray;
+    margin-top: -2px;
 }
 
 .restore-button:hover {
