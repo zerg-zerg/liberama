@@ -10,8 +10,8 @@ module.exports = {
 
     execDir,
     progressApi: {
-        url: process.env.REMOTE_STORAGE_URL || '',
-        accessToken: process.env.REMOTE_STORAGE_ACCESS_TOKEN || ''
+        url: process.env.PROGRESS_API_URL || '',
+        accessToken: process.env.PROGRESS_API_ACCESS_TOKEN || ''
     },
 
     loggingEnabled: true,
