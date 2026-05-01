@@ -1,7 +1,34 @@
 import axios from 'axios';
+import _ from 'lodash';
 import * as utils from '../share/utils';
 import * as cryptoUtils from '../share/cryptoUtils';
 import wsc from './webSocketConnection';
+
+// Debounced save reading progress to avoid excessive API calls
+let saveReadingProgressDebounced = _.debounce(async function({
+    uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
+    textLength,
+    title,
+    authors
+}, config) {
+    try {
+        // Use progressApi URL from config if available, otherwise use default
+        const apiUrl = config?.progressApi?.url || '/api/reader/save-progress';
+        const apiKey = config?.progressApi?.accessToken || '';
+        
+        const response = await axios.post(apiUrl, {
+            uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
+            textLength,
+            title,
+            authors,
+            key: apiKey,
+        });
+        return response.data;
+    } catch (e) {
+        console.error('Failed to save reading progress:', e.message);
+        return null;
+    }
+}, 1000, { maxWait: 2000 });
 
 const api = axios.create({
     baseURL: '/api/reader'
@@ -195,6 +222,21 @@ class Reader {
             throw new Error(`response.data is empty`);
 
         return response.data;
+    }
+
+    async saveReadingProgress({
+        uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
+        textLength,
+        title,
+        authors
+    }, config) {
+        // Use debounced function to avoid excessive API calls
+        return await saveReadingProgressDebounced({
+            uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
+            textLength,
+            title,
+            authors
+        }, config);
     }
 }
 

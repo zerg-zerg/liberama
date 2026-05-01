@@ -15,3 +15,5 @@ services:
       - ../data:/data/liberama
     environment:
       - APPDIR=/data/liberama
+      - PROGRESS_API_URL=https://your-api-server.com/api/reader/save-progress
+      - PROGRESS_API_ACCESS_TOKEN=your-api-key-here

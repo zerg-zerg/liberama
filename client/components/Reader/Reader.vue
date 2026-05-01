@@ -256,6 +256,9 @@ const componentOptions = {
                     this.debouncedSetRecentBook(newValue);
                 else
                     this.scrollingSetRecentBook(newValue);
+                
+                // Save reading progress to API
+                this.saveReadingProgressToApi();
             }
         },
         routeParamPos: function(newValue) {
@@ -900,6 +903,23 @@ class Reader {
         this.stopSearch();
         this.helpActive = false;
         this.contentsActive = false;
+        
+        // Save reading progress when closing book
+        this.saveReadingProgressToApi();
+    }
+    
+    saveReadingProgressToApi() {
+        const recent = this.mostRecentBook();
+
+        if (recent && recent.sameBookKey) {
+            const { uploadFileName, sameBookKey, loadTime, bookPosSeen, textLength, fb2, addTime  } = recent;
+            readerApi.saveReadingProgress({
+                uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
+                textLength,
+                title: fb2?.bookTitle,
+                authors: fb2?.author?.map(item => item?.firstName + ' ' + item?.lastName).join(',')
+            }, this.config);
+        }
     }
 
     loaderToggle() {

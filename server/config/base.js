@@ -9,6 +9,10 @@ module.exports = {
     name: pckg.name,
 
     execDir,
+    progressApi: {
+        url: process.env.REMOTE_STORAGE_URL || '',
+        accessToken: process.env.REMOTE_STORAGE_ACCESS_TOKEN || ''
+    },
 
     loggingEnabled: true,
 
@@ -70,6 +74,7 @@ module.exports = {
         accessToken: '',
     },
     */
+
     bucEnabled: false,
     bucServer: false,
     /*
