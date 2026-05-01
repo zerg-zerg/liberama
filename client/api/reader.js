@@ -9,7 +9,7 @@ let saveReadingProgressDebounced = _.debounce(async function({
     uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
     textLength,
     title,
-    authors
+    authors, userid
 }, config) {
     try {
         // Use progressApi URL from config if available, otherwise use default
@@ -21,6 +21,7 @@ let saveReadingProgressDebounced = _.debounce(async function({
             textLength,
             title,
             authors,
+            userid,
             key: apiKey,
         });
         return response.data;
@@ -228,14 +229,14 @@ class Reader {
         uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
         textLength,
         title,
-        authors
+        authors, userid
     }, config) {
         // Use debounced function to avoid excessive API calls
         return await saveReadingProgressDebounced({
             uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
             textLength,
             title,
-            authors
+            authors, userid
         }, config);
     }
 }
