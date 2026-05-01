@@ -15,6 +15,8 @@ const propsToSave = [
     'bucEnabled',
     'bucServer',
     'networkLibraryLink',
+
+    'progressApi',
 ];
 
 let instance = null;
