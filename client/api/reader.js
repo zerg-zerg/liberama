@@ -9,20 +9,17 @@ let saveReadingProgressDebounced = _.debounce(async function({
     uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
     textLength,
     title,
-    authors, userid
-}, config) {
+    authors, userid, webhookUrl, apiKey,
+}) {
     try {
-        // Use progressApi URL from config if available, otherwise use default
-        const apiUrl = config?.progressApi?.url || '/api/reader/save-progress';
-        const apiKey = config?.progressApi?.accessToken || '';
-        
-        const response = await axios.post(apiUrl, {
+        const response = await axios.post(webhookUrl, {
             uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
             textLength,
             title,
             authors,
             userid,
             key: apiKey,
+            type: 'liberama',
         });
         return response.data;
     } catch (e) {
@@ -229,15 +226,17 @@ class Reader {
         uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
         textLength,
         title,
-        authors, userid
-    }, config) {
+        authors, userid,
+        webhookUrl,
+        apiKey,
+    }) {
         // Use debounced function to avoid excessive API calls
         return await saveReadingProgressDebounced({
             uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
             textLength,
             title,
-            authors, userid
-        }, config);
+            authors, userid, webhookUrl, apiKey,
+        });
     }
 }
 

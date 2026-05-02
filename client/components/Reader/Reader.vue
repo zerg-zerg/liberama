@@ -222,9 +222,6 @@ import miscApi from '../../api/misc';
 import {versionHistory} from './versionHistory';
 import * as utils from '../../share/utils';
 import LockQueue from '../../share/LockQueue';
-import Hashes from 'jshashes';
-
-const SHA256 = new Hashes.SHA256;
 
 const componentOptions = {
     components: {
@@ -870,10 +867,6 @@ class Reader {
         return this.$store.state.reader.settings;
     }
 
-    get serverStorageKey() {
-        return SHA256.hex(this.$store.state.reader.serverStorageKey || '');
-    }
-
     addAction(pos) {
         let a = this.actionList;
         if (!a.length || a[a.length - 1] != pos) {
@@ -924,9 +917,11 @@ class Reader {
                 uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
                 textLength,
                 title: fb2?.bookTitle,
-                userid: this.serverStorageKey,
-                authors: fb2?.author?.map(item => item?.firstName + ' ' + item?.lastName).join(',')
-            }, this.config);
+                userid: this.settings.userId,
+                authors: fb2?.author?.map(item => item?.firstName + ' ' + item?.lastName).join(','),
+                webhookUrl: this.settings.webhookUrl,
+                apiKey: this.settings.apiKey
+            });
         }
     }
 

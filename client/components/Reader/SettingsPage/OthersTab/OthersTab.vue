@@ -97,6 +97,65 @@
                 </q-tooltip>
             </q-checkbox>
         </div>
+
+        <!---------------------------------------------->
+        <div class="sets-part-header">
+            Webhook
+        </div>
+
+        <div class="sets-item row">
+            <div class="sets-label label">
+                User ID
+            </div>
+            <q-input
+                v-model="form.userId"
+                type="text"
+                dense
+                outlined
+                style="width: 275px"
+                clearable
+            >
+                <q-tooltip :delay="1000" anchor="top middle" self="bottom middle" content-style="font-size: 80%">
+                    Идентификатор пользователя для отправки уведомлений
+                </q-tooltip>
+            </q-input>
+        </div>
+
+        <div class="sets-item row">
+            <div class="sets-label label">
+                Webhook URL
+            </div>
+            <q-input
+                v-model="form.webhookUrl"
+                type="text"
+                dense
+                outlined
+                style="width: 275px"
+                clearable
+            >
+                <q-tooltip :delay="1000" anchor="top middle" self="bottom middle" content-style="font-size: 80%">
+                    URL для отправки уведомлений о прогрессе чтения
+                </q-tooltip>
+            </q-input>
+        </div>
+
+        <div class="sets-item row">
+            <div class="sets-label label">
+                API Key
+            </div>
+            <q-input
+                v-model="form.apiKey"
+                type="text"
+                dense
+                outlined
+                style="width: 275px"
+                clearable
+            >
+                <q-tooltip :delay="1000" anchor="top middle" self="bottom middle" content-style="font-size: 80%">
+                    API ключ для аутентификации при отправке уведомлений
+                </q-tooltip>
+            </q-input>
+        </div>
     </div>
 </template>
 

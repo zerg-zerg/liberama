@@ -211,6 +211,11 @@ const settingDefaults = {
     bucSetOnNew: true, // автоматически включать проверку обновлений для вновь загружаемых файлов
     bucCancelEnabled: true, // вкл/выкл отмену проверки книг через bucCancelDays
     bucCancelDays: 90, // количество дней, через которое отменяется проверка книги, при условии отсутствия обновлений за это время
+
+    // User settings for webhook integration
+    userId: '',
+    webhookUrl: '',
+    apiKey: '',
 };
 
 for (const font of fonts)
