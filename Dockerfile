@@ -4,7 +4,8 @@ WORKDIR /srv/liberama
 
 COPY . ./
 
-RUN apt-get update && apt-get install -y 7zip libreoffice poppler-utils djvulibre-bin libtiff-tools graphicsmagick-imagemagick-compat zip
+RUN apt-get update && apt-get install -y 7zip zip
+# RUN apt-get update && apt-get install -y 7zip libreoffice poppler-utils djvulibre-bin libtiff-tools graphicsmagick-imagemagick-compat zip
 # RUN apt update && apt install -y libgl1-mesa-glx libxdamage1 libegl1 libxkbcommon0 libopengl0 wget xz-utils libxcb-cursor0
 
 # calibre тут пока не получилось завести
