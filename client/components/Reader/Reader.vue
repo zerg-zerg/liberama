@@ -920,7 +920,8 @@ class Reader {
                 userid: this.settings.userId,
                 authors: fb2?.author?.map(item => item?.firstName + ' ' + item?.lastName).join(','),
                 webhookUrl: this.settings.webhookUrl,
-                apiKey: this.settings.apiKey
+                apiKey: this.settings.apiKey,
+                url: window.location.origin+'#/reader?url='+recent.url,
             });
         }
     }

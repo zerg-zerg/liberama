@@ -9,7 +9,7 @@ let saveReadingProgressDebounced = _.debounce(async function({
     uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
     textLength,
     title,
-    authors, userid, webhookUrl, apiKey,
+    authors, userid, webhookUrl, apiKey, url
 }) {
     try {
         const response = await axios.post(webhookUrl, {
@@ -18,7 +18,7 @@ let saveReadingProgressDebounced = _.debounce(async function({
             title,
             authors,
             userid,
-            key: apiKey,
+            key: apiKey, url,
             type: 'liberama',
         });
         return response.data;
@@ -228,14 +228,14 @@ class Reader {
         title,
         authors, userid,
         webhookUrl,
-        apiKey,
+        apiKey, url
     }) {
         // Use debounced function to avoid excessive API calls
         return await saveReadingProgressDebounced({
             uploadFileName, sameBookKey, loadTime, addTime, bookPosSeen,
             textLength,
             title,
-            authors, userid, webhookUrl, apiKey,
+            authors, userid, webhookUrl, apiKey, url
         });
     }
 }
